@@ -1,11 +1,15 @@
-export default function updateUniqueItems(items) {
-  if (!(items instanceof Map)) {
-    throw new Error('Cannot process');
+export const weakMap = new WeakMap();
+
+export function queryAPI(endpoint) {
+  let called = weakMap.get(endpoint) || 0;
+
+  called += 1;
+
+  weakMap.set(endpoint, called);
+
+  if (called >= 5) {
+    throw Error('Endpoint load is high');
   }
-  for (const [key, value] of items) {
-    if (value === 1) {
-      items.set(key, 100);
-    }
-  }
-  return items;
+
+  return called;
 }
